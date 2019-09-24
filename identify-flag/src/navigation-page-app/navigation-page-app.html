@@ -1,0 +1,87 @@
+<!--Page contains the navigation buttons for Identify Flag and Login Page and navigatiion related code-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="lazy-import" href="../login-page-app/login-page-app.html">
+<link rel="import" href="../identify-flag-app/identify-flag-app.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../comp-usage/comp-usage.html">
+<dom-module id="navigation-page-app">
+    <template>
+        <style>
+            a{
+                background-color:green;
+                color:white;
+                text-decoration:none;
+            }
+        </style>  
+        <app-location route="{{route}}"></app-location>
+        <app-route
+        route="{{route}}"
+        pattern="/:selectedTab"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>   
+       <app-toolbar>
+        <iron-selector selected="[[selectedTab]]" attr-for-selected="name" role="navigation">
+        <a name="IdentifyFlag" href="identify-flag-app">Identify Flag</a>
+        <a name="LoginPage" href="login-page-app">Login Page</a>
+        </iron-selector>
+        </app-toolbar>
+        <iron-pages selected="[[selectedTab]]" attr-for-selected="name">
+              <identify-flag-app name="identify-flag-app"></identify-flag-app>
+            <login-page-app name="login-page-app"></login-page-app>
+        </iron-pages>  
+      <!--  <comp-usage></comp-usage>  -->
+    </template>
+    <script>
+
+
+        class NavigationPageApp extends Polymer.Element{
+               static get is() {
+                    return 'navigation-page-app'; 
+             }
+             static get properties(){
+               //let selectedTab;
+               //console.log(selectedTab);
+             return { 
+                  selectedTab:{
+                   type:String,
+                   reflectToAttribute:true,
+                   observer:'_selectedTabChanged'
+               },
+               routeData:Object,
+               subroute:Object,
+               rootPath:String            
+         }; }
+
+            static get observers(){
+                console.log("inside Observer");
+                return ['_routePageChanged(routeData.selectedTab)',];
+               
+            }
+
+            
+
+             _routePageChanged(selectedTab){
+                 console.log("selectedTab"+selectedTab);
+                 this.selectedTab=selectedTab||'navigation-page-app';
+                 console.log("selectedTab1"+selectedTab);              
+             }
+
+              _selectedTabChanged(selectedTab){
+                  console.log("Tab Changes"+selectedTab);
+           let  targetUrl=this.resolveUrl('../'+selectedTab+'/'+selectedTab+".html");
+            Polymer.importHref(
+              targetUrl,
+              null,
+              null,
+              true  
+            );
+             }
+           
+        }
+        customElements.define(NavigationPageApp.is,NavigationPageApp);
+    </script>
+</dom-module>

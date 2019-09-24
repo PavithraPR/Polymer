@@ -1,0 +1,7 @@
+{
+  "name": "identify-flag",
+  "short_name": "identify-flag",
+  "description": "Game-Identifying the flag by user based on his country",
+  "start_url": "/",
+  "display": "standalone"
+}

@@ -1,0 +1,116 @@
+<!--Simple User interface for the user login-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<dom-module id="login-page-app">
+<p>This is login-page</p>
+    <template>
+        <style>
+        </style>
+        <p>Register your details in our app by filling below details</p>
+        <form id="form" is="iron-form">
+        <div id="newUser">
+        <paper-input name="userName"  value="{{userName}}"  type="text" placeholder="Contact Number" auto-validate required
+        allowed-pattern="[0-9]" min-length=10 max-length=10></paper-input>
+        <paper-input name="password" value="{{password}}"  type="password" placeholder="Password"
+         auto-validate required allowed-pattern="[A-Za-z0-9@*#$]"></paper-input>
+        </div> 
+        <div id='btns'>
+           <paper-button name="Register" value="Register"  on-click="_validateUserCredentials">Register</paper-button>
+           <paper-button name="SignIn" value="SignIn"  on-click="_validateUserCredentials" >Sign In</paper-button> 
+        </div>
+         <iron-ajax 
+         auto
+         url="../../data/users/users_data.json"
+         handle-as="json"
+         on-response="_getExistingUsersData"
+         content-type="application/json"> 
+         </iron-ajax>
+    <!--          <iron-ajax
+                 auto
+                 method="post"
+                 url="../../data/users/users_data"
+                 body={{_postUsersData}}
+                 handle-as="json"
+                 content-type="application/json"
+                 last-response="{{_postUsersData}}"
+                 >
+      </iron-ajax>
+      -->
+      </form>
+
+    </template>
+    <script>
+        class LoginPageApp extends Polymer.Element{
+               static get is() { return 'login-page-app'; }
+               static get properties(){
+                  return{ 
+                        password:{
+                       type:String,
+                       value:""
+                   },
+                        userName:{
+                       type:String,
+                       value:"",
+                       reflectToAttribute:true
+                   },
+                usersJSON:Object,
+                message:String,
+                buttonType:String,
+                _postUsersData:Object
+            }
+               }                   
+               _getExistingUsersData(event){
+                   this.usersJSON=event.detail.response.users;
+                   //return usersJSON;
+               }; 
+
+             _validateUserCredentials(event){
+                 if(this.userName==="" || this.password===""){
+                     alert("Please Enter the mandatory details to proceed");
+                     return;
+                 }
+                 this.buttonType=event.path[2].attributes.name.nodeValue;
+                 console.log("this.userJSON"+JSON.stringify(this.usersJSON));
+                 this.message="";
+                         this.usersJSON.forEach((value,index,arr)=>{
+                              console.log("this.userJSON"+JSON.stringify(this.usersJSON));
+                        if(value.userName===this.userName){
+                           this.message= (this.buttonType==='Register')?"Entered User Name exists in the system":(
+                                value.password!==this.password?"You have entered incorrect credentials":""
+                            );
+                            return; 
+                        }
+                        else if(index===this.usersJSON.length-1 && this.message==="" && this.message!==undefined){
+                        this.message= (this.buttonType==='SignIn')?"User your are trying to login doesn't exist":"";
+                        } }
+                        )
+                        console.log("message is "+this.message);
+                        if (this.message!=="" && this.message!==undefined)
+                        {
+                            alert(this.message); 
+                        }
+                        else{
+                           if(this.buttonType==='Register'){
+                              let obj={
+                                  userName:this.userName,
+                                   password:this.password
+                                };
+                               this.usersJSON.push(obj);
+                               this._postUsersData=obj;
+                               console.log(this._postUsersData);
+                           }
+
+                        }
+               }
+               _nameValidator(value){
+                   console.log("value"+value);
+               }
+            }
+        
+        customElements.define(LoginPageApp.is,LoginPageApp);
+
+    </script>
+</dom-module>

@@ -1,0 +1,22 @@
+<!--page to practice each component usage with examples-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<dom-module id="comp-usage">
+    <template>
+        <style>
+        </style>
+      <h3>Below is the app-elements usage</h3>
+      <app-header reveals>  
+        <app-toolbar>      
+      <div main-title>First App</div>      
+     </app-toolbar>  
+    </app-header> 
+    </template>
+    <script>
+        class CompUsage extends Polymer.Element{
+            static get is(){
+                return 'comp-usage';
+            }
+        }
+                customElements.define(CompUsage.is,CompUsage);
+    </script>
+</dom-module>
